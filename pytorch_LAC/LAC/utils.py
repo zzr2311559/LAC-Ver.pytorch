@@ -1,7 +1,8 @@
-import numpy as np
+`import numpy as np
 from collections import OrderedDict
 import matplotlib.pyplot as plt
 import copy
+
 def get_evaluation_rollouts(policy, env, num_of_paths, max_ep_steps, render= True):
 
     a_bound = env.action_space.high
@@ -28,7 +29,7 @@ def get_evaluation_rollouts(policy, env, num_of_paths, max_ep_steps, render= Tru
                 break
     if len(paths)< num_of_paths:
         print('no paths is acquired')
-
+        
     return paths
 
 
@@ -71,8 +72,16 @@ def evaluate_training_rollouts(paths):
     except KeyError:
         return
     [path.pop('rewards') for path in data]
+
+    
     for key in data[0].keys():
-        result = [np.mean(path[key]) for path in data]
+        result = []
+        for path in data:
+            value_list = path[key]
+            for i,k in enumerate(value_list):
+                value_list[i] = k.cpu
+            vale = np.mean(value_list)
+            result.append(value)
         diagnostics.update({key: np.mean(result)})
 
     return diagnostics
